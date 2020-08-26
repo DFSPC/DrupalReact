@@ -1,5 +1,4 @@
 import React from 'react';
-import './App.css';
 import Menu from './menu/menu.js'
 
 class App extends React.Component {
