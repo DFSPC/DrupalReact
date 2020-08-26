@@ -62,6 +62,9 @@ class Menu extends React.Component {
               <li>
                 <Link to="/posts">Posts</Link>
               </li>
+              <li>
+                <Link to="/users">Users</Link>
+              </li>
               {this.state.user.uid !== null &&
                 <div>
                   <li>
@@ -99,6 +102,9 @@ class Menu extends React.Component {
             <Route path="/posts">
               <AllPosts />
             </Route>
+            <Route path="/users">
+              <Users />
+            </Route>
             <Route path="/create">
               <CreatePost user = {this.state.user}/>
             </Route>
@@ -107,6 +113,10 @@ class Menu extends React.Component {
                 user = {this.state.user}
               />
             </Route>
+            <Route
+              exact path="/user/:userId"
+              render={(props) => <UserPosts {...props}/>}
+            />
             <Route
               exact path="/post/:postId"
               render={(props) => <DetailPost {...props} user = {this.state.user}/>}
@@ -143,7 +153,7 @@ class AllPosts extends React.Component {
     return (
       <div className = "all-post">
         <h2>All posts</h2>
-        <ListPosts/>
+        <Posts/>
       </div>
     );
   }
@@ -166,13 +176,32 @@ class MyPosts extends React.Component {
       return (
         <div className = "my-post">
           <h2>My posts</h2>
-          <ListPosts userId = {this.state.user.uid}/>
+          <Posts userId = {this.state.user.uid}/>
         </div>
       );
     }
   }
 }
-class ListPosts extends React.Component {
+
+class UserPosts extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      posts: [],
+      userId : props.match.params.userId,
+    };
+  };
+
+  render(){
+    return (
+      <div className = "my-post">
+        <h2>User posts</h2>
+        <Posts userId = {this.state.userId}/>
+      </div>
+    );
+  }
+}
+class Posts extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -525,6 +554,47 @@ class DeletePost extends React.Component {
     .then(function(res) {
       self.setState({ redirect: "/posts-me" });
     })
+  }
+}
+
+class Users extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      users: [],
+      userId: props.userId
+    };
+  };
+
+  render(){
+    return (
+      <div className = "list-users">
+        <h2>Users</h2>
+        <ul>
+          {this.state.users.map(user => (
+            user.attributes.name !== undefined &&
+              <li key={user.id}>
+                <Link to={`/user/${user.id}`}>
+                  <h3>{user.attributes.name}</h3>
+                </Link>
+              </li>
+          ))}
+        </ul>
+      </div>
+    );
+  }
+
+  componentDidMount() {
+    let url = APP_DOMAIN_USER_INFO;
+    fetch(url)
+    .then(res => res.json())
+    .then(
+      (result) => {
+        this.setState({
+          users: result.data
+        });
+      }
+    )
   }
 }
 class Login extends React.Component {
