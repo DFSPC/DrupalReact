@@ -152,7 +152,7 @@ class AllPosts extends React.Component {
   render(){
     return (
       <div className = "all-post">
-        <h2>All posts</h2>
+        <h2>Posts</h2>
         <Posts/>
       </div>
     );
@@ -189,13 +189,14 @@ class UserPosts extends React.Component {
     this.state = {
       posts: [],
       userId : props.match.params.userId,
+      userName: props.location.userName
     };
   };
 
   render(){
     return (
       <div className = "my-post">
-        <h2>User posts</h2>
+        <h2>{this.state.userName} posts</h2>
         <Posts userId = {this.state.userId}/>
       </div>
     );
@@ -384,7 +385,12 @@ class DetailPost extends React.Component {
                 Edit Post
               </Link>
               <br></br>
-              <Link to={`/post-delete/${this.state.post.data.id}`}>
+              <Link to={
+                {
+                  pathname: `/post-delete/${this.state.post.data.id}`,
+                  postName: this.state.post.data.attributes.title
+                 }
+              }>
                 Delete Post
               </Link>
             </div>
@@ -456,6 +462,9 @@ class EditPost extends React.Component {
                 <Field name="submit" type="submit" value ="Edit" />
               </Form>
             </Formik>
+            <Link to={`/post/${this.state.postId}`}>
+              Cancel
+            </Link>
           </div>
         )
       }else{
@@ -510,6 +519,7 @@ class DeletePost extends React.Component {
     super(props);
     this.state = {
       postId : props.match.params.postId,
+      postName : props.location.postName,
       user: props.user
     };
   };
@@ -523,7 +533,7 @@ class DeletePost extends React.Component {
     }
     return (
       <div className = "post-delete">
-        <h2>Are you sure you wanna delete this post</h2>
+        <h2>Are you sure you wanna delete <em>{this.state.postName}</em>?</h2>
         <Formik
             initialValues={{ postId: this.state.postId}}
             onSubmit= {(values) => {
@@ -534,6 +544,9 @@ class DeletePost extends React.Component {
             <Field name="submit" type="submit" value ="Delete" />
           </Form>
         </Formik>
+        <Link to={`/post/${this.state.postId}`}>
+          Cancel
+        </Link>
       </div>
     );
   }
@@ -574,7 +587,12 @@ class Users extends React.Component {
           {this.state.users.map(user => (
             user.attributes.name !== undefined &&
               <li key={user.id}>
-                <Link to={`/user/${user.id}`}>
+                <Link to={
+                  {
+                    pathname: `/user/${user.id}`,
+                    userName: user.attributes.name
+                   }
+                }>
                   <h3>{user.attributes.name}</h3>
                 </Link>
               </li>
