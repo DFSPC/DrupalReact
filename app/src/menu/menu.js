@@ -21,7 +21,6 @@ class Menu extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      posts: props.posts,
       user: props.user
     };
   };
@@ -81,9 +80,7 @@ class Menu extends React.Component {
               <CreatePost user = {this.state.user}/>
             </Route>
             <Route path={"/posts-me"}>
-              <MyPosts
-                user = {this.state.user}
-              />
+              <MyPosts user = {this.state.user}/>
             </Route>
             <Route
               exact path="/user/:userId"

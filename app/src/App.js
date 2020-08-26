@@ -6,7 +6,6 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      posts: [],
       user :{
         uid: null,
         name: null,
@@ -22,10 +21,7 @@ class App extends React.Component {
           <h1>API Drupal Test</h1>
         </header>
         <div className="menu">
-          <Menu 
-            posts = {this.state.posts}
-            user = {this.state.user}
-          />
+          <Menu user = {this.state.user}/>
         </div>
       </div>
     )
