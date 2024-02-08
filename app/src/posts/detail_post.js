@@ -9,10 +9,12 @@ class DetailPost extends React.Component {
       postId : props.match.params.postId,
       user: props.user
     };
+    console.log("this.state.post", this.state.post);
   };
 
   render() {
     let userId = this.state.user.uid;
+    console.log("this.state.post", this.state.post);
     if (this.state.post !== undefined){
       return (
         <div className = "post-detail">

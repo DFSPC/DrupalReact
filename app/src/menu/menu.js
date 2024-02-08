@@ -1,7 +1,7 @@
 import React from 'react';
 import {
   BrowserRouter as Router,
-  Switch,
+  Routes,
   Route,
   Link
 } from "react-router-dom";
@@ -57,38 +57,38 @@ class Menu extends React.Component {
 
           {/* A <Switch> looks through its children <Route>s and
               renders the first one that matches the current URL. */}
-          <Switch>
-            <Route path="/login">
-              <Login 
+          <Routes>
+            <Route path="/login"
+              element={<Login 
                 user = {this.state.user}
                 updateUser = {this.updateUser}
-              />
-            </Route>
-            <Route path="/register">
-              <Register
+              />}
+            />
+            <Route path="/register"
+               element={<Register
                 user = {this.state.user}
                 updateUser = {this.updateUser}
-              />
-            </Route>
-            <Route path="/posts">
-              <AllPosts />
-            </Route>
-            <Route path="/users">
-              <Users />
-            </Route>
-            <Route path="/create">
-              <CreatePost user = {this.state.user}/>
-            </Route>
-            <Route path={"/posts-me"}>
-              <MyPosts user = {this.state.user}/>
-            </Route>
+              />}
+            />
+            <Route path="/posts"
+               element={<AllPosts />}
+            />
+            <Route path="/users"
+              element={<Users />}
+            />
+            <Route path="/create"
+              element={<CreatePost user = {this.state.user}/>}
+            />
+            <Route path={"/posts-me"}
+              element={<MyPosts user = {this.state.user}/>}
+            />
             <Route
               exact path="/user/:userId"
               render={(props) => <UserPosts {...props}/>}
             />
             <Route
               exact path="/post/:postId"
-              render={(props) => <DetailPost {...props} user = {this.state.user}/>}
+              children={(props) => <DetailPost {...props} user = {this.state.user}/>}
             />
             <Route
               exact path="/post-delete/:postId"
@@ -98,7 +98,7 @@ class Menu extends React.Component {
               exact path="/post-edit/:postId"
               render={(props) => <EditPost {...props} user = {this.state.user}/>}
             />
-          </Switch>
+          </Routes>
         </div>
       </Router>
     )

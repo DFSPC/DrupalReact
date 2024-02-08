@@ -1,5 +1,5 @@
 import React from 'react';
-import { Redirect } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import { Formik, Field, Form } from "formik";
 import base64 from 'react-native-base64'
 import Constants from './../constants/constants.js';
@@ -13,7 +13,7 @@ class Register extends React.Component {
   };
   render() {
     if (this.state.redirect){
-      return <Redirect to={this.state.redirect} />
+      return <Navigate to={this.state.redirect} />
     }
     if (this.state.user.token == null){
       return (

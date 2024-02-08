@@ -17,15 +17,15 @@ class Users extends React.Component {
         <h2>Users</h2>
         <ul>
           {this.state.users.map(user => (
-            user.attributes.name !== undefined &&
+            user.attributes.display_name !== undefined &&
               <li key={user.id}>
                 <Link to={
                   {
                     pathname: `/user/${user.id}`,
-                    userName: user.attributes.name
+                    userName: user.attributes.display_name
                     }
                 }>
-                  <h3>{user.attributes.name}</h3>
+                  <h3>{user.attributes.display_name}</h3>
                 </Link>
               </li>
           ))}

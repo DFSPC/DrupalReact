@@ -1,5 +1,5 @@
 import React from 'react';
-import { Redirect , Link} from "react-router-dom";
+import { Navigate , Link} from "react-router-dom";
 import { Formik, Field, Form } from "formik";
 import Constants from './../constants/constants.js';
 
@@ -27,7 +27,7 @@ class EditPost extends React.Component {
 
   render(){
     if (this.state.redirect) {
-      return <Redirect to={this.state.redirect} />
+      return <Navigate to={this.state.redirect} />
     }
     if (this.state.user.uid != null){
       if (this.state.post !== undefined){

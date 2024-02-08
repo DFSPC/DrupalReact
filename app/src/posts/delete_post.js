@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, Redirect } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { Formik, Field, Form } from "formik";
 import Constants from './../constants/constants.js';
 
@@ -15,10 +15,10 @@ class DeletePost extends React.Component {
 
   render() {
     if (this.state.user.token == null){
-      return <Redirect to='/login' />
+      return <Navigate to='/login' />
     }
     if (this.state.redirect) {
-      return <Redirect to={this.state.redirect} />
+      return <Navigate to={this.state.redirect} />
     }
     return (
       <div className = "post-delete">
