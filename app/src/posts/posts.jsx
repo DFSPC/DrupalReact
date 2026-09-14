@@ -43,7 +43,7 @@ class Posts extends React.Component {
       }
     }
     const headers = this.state.user && this.state.user.token
-      ? { Authorization: ' Basic ' + this.state.user.token }
+      ? { Authorization: 'Basic ' + this.state.user.token }
       : {};
     fetch(url, { credentials: 'include', headers: headers })
     .then(res => res.json())

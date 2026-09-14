@@ -15,6 +15,9 @@ class Login extends React.Component {
     if (this.state.redirect){
       return <Navigate to={this.state.redirect} />
     }
+    if (this.state.error) {
+      return <p>{this.state.error}</p>;
+    }
     if (this.state.user.token == null){
       return (
         <div className="login-user">
@@ -68,11 +71,16 @@ class Login extends React.Component {
       body: JSON.stringify(data),
     };
 
-    fetch(Constants.APP_DOMAIN_USER_LOGIN, obj)  
+    fetch(Constants.APP_DOMAIN_USER_LOGIN, obj)
     .then(function(res) {
-      return res.json();
+      return res.json().then(body => ({ ok: res.ok, status: res.status, body: body }));
     })
-    .then(function(resJson) {
+    .then(function(response) {
+      if (!response.ok) {
+        const error = response.body.errors && response.body.errors[0];
+        throw new Error(error ? error.detail || error.title : `Login failed (${response.status}).`);
+      }
+      const resJson = response.body;
       if (!!resJson.csrf_token){
         fetch(Constants.APP_DOMAIN_USER_INFO, { credentials: 'include' })
         .then(res => res.json())
@@ -84,7 +92,8 @@ class Login extends React.Component {
             uid: apiUser ? apiUser.id : resJson.current_user.uid,
             internalUid: resJson.current_user.uid,
             name: resJson.current_user.name,
-            token: base64.encode(values.user + ':' + values.password)
+            token: base64.encode(values.user + ':' + values.password),
+            csrfToken: resJson.csrf_token
           };
           self.setState({ user: user, redirect: "/posts-me" });
           self.props.updateUser(user);
@@ -93,13 +102,15 @@ class Login extends React.Component {
         return false;
       }
     })
+    .catch(error => self.setState({ error: error.message }));
   }
 
   userLogout(values){
     const user = {
       uid: null,
       name: null,
-      token: null
+      token: null,
+      csrfToken: null
     };
     this.setState({ user: user });
     this.props.updateUser(user);

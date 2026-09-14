@@ -48,7 +48,8 @@ class DeletePost extends React.Component {
       headers: {
         'Content-Type': 'application/vnd.api+json',
         'Accept': 'application/vnd.api+json',
-        'Authorization': ' Basic ' + this.state.user.token
+        'Authorization': 'Basic ' + this.state.user.token,
+        'X-CSRF-Token': this.state.user.csrfToken
       },
       credentials: 'include',
     };

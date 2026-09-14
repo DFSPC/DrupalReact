@@ -82,17 +82,21 @@ class CreatePost extends React.Component {
         headers: {
           'Content-Type': 'application/vnd.api+json',
           'Accept': 'application/vnd.api+json',
-          'Authorization': ' Basic ' + this.state.user.token
+          'Authorization': 'Basic ' + this.state.user.token,
+          'X-CSRF-Token': this.state.user.csrfToken
         },
         credentials: 'include',
         body: JSON.stringify(data),
       };
 
       fetch(Constants.APP_DOMAIN_POSTS, obj)
-      .then(function(res) {
-        return res.json();
-      })
-      .then(function(resJson) {
+      .then(res => res.json().then(body => ({ ok: res.ok, body: body })))
+      .then(function(response) {
+        if (!response.ok) {
+          const error = response.body.errors && response.body.errors[0];
+          throw new Error(error ? error.detail || error.title : 'Unable to create the post.');
+        }
+        const resJson = response.body;
         let postId = resJson.data.id;
         let obj = {
           method: 'POST',
@@ -100,7 +104,8 @@ class CreatePost extends React.Component {
             'Content-Type': 'application/octet-stream',
             'Accept': 'application/vnd.api+json',
             'Content-Disposition': 'file; filename="' + values.file.name + '"',
-            'Authorization': ' Basic ' + self.state.user.token
+            'Authorization': 'Basic ' + self.state.user.token,
+            'X-CSRF-Token': self.state.user.csrfToken
           },
             credentials: 'include',
           body: self.state.image,

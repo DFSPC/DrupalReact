@@ -30,6 +30,9 @@ class EditPost extends React.Component {
       return <Navigate to={this.state.redirect} />
     }
     if (this.state.user.uid != null){
+      if (this.state.error) {
+        return <p>{this.state.error}</p>;
+      }
       if (this.state.post !== undefined){
         return (
           <div className="edit-post">
@@ -86,19 +89,23 @@ class EditPost extends React.Component {
       headers: {
         'Content-Type': 'application/vnd.api+json',
         'Accept': 'application/vnd.api+json',
-        'Authorization': ' Basic ' + this.state.user.token
+        'Authorization': 'Basic ' + this.state.user.token,
+        'X-CSRF-Token': this.state.user.csrfToken
       },
       credentials: 'include',
       body: JSON.stringify(data),
     };
 
     fetch(url, obj)
-    .then(function(res) {
-      return res.json();
-    })
-    .then(function(resJson) {
+    .then(res => res.json().then(body => ({ ok: res.ok, body: body })))
+    .then(function(response) {
+      if (!response.ok) {
+        const error = response.body.errors && response.body.errors[0];
+        throw new Error(error ? error.detail || error.title : 'Unable to edit the post.');
+      }
       self.setState({ redirect: "/post/" + self.state.postId });
     })
+    .catch(error => self.setState({ error: error.message }));
   }
 }
 
