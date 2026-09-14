@@ -1,7 +1,6 @@
 import React from 'react';
 import { Navigate } from "react-router-dom";
 import { Formik, Field, Form } from "formik";
-import base64 from 'react-native-base64'
 import Constants from './../constants/constants.jsx';
 
 class Register extends React.Component {
@@ -14,6 +13,9 @@ class Register extends React.Component {
   render() {
     if (this.state.redirect){
       return <Navigate to={this.state.redirect} />
+    }
+    if (this.state.error) {
+      return <p>{this.state.error}</p>;
     }
     if (this.state.user.token == null){
       return (
@@ -59,44 +61,42 @@ class Register extends React.Component {
   userRegister(values){
     let self = this;
     let data = {
-      "name": [
-        {"value": values.user}
-      ],
-      "mail": [
-        {"value": values.mail}
-      ],
-      "pass": [
-        {"value": values.password}
-      ]
+      data: {
+        type: 'user--user',
+        attributes: {
+          name: values.user,
+          mail: values.mail,
+          pass: values.password
+        }
+      }
     };
     let obj = {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/vnd.api+json',
+        'Accept': 'application/vnd.api+json'
       },
       credentials: 'include',
       body: JSON.stringify(data),
     };
 
     fetch(Constants.APP_DOMAIN_USER_REGISTER, obj)
-    .then(function(res) {
-      return res.json();
-    })
-    .then(function(resJson) {
-      if (!!resJson.uuid[0].value){
-        self.setState({
-          user :{
-            uid: resJson.uuid[0].value,
-            name: resJson.name[0].value,
-            token : base64.encode(values.user + ':' + values.password)
-          }
-        });
-        self.props.updateUser(self.state.user);
-        self.setState({ redirect: "/posts-me" });
+    .then(res => res.json().then(body => ({ ok: res.ok, status: res.status, body: body })))
+    .then(function(response) {
+      if (!response.ok) {
+        const error = response.body.message ||
+          (response.body.errors && response.body.errors[0] && response.body.errors[0].detail) ||
+          `Registration failed (${response.status}).`;
+        throw new Error(error);
+      }
+      const resJson = response.body;
+      if (resJson.data && resJson.data.id){
+        self.setState({ redirect: "/login" });
       }else{
-        return false;
+        throw new Error('Registration response did not include a user ID.');
       }
     })
+    .catch(error => self.setState({ error: error.message }));
   }
 
   userLogout(values){

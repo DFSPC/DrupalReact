@@ -8,7 +8,7 @@ class DeletePost extends React.Component {
     super(props);
     this.state = {
       postId : props.match.params.postId,
-      postName : props.location.postName,
+      postName : props.location.state && props.location.state.postName,
       user: props.user
     };
   };

@@ -93,7 +93,8 @@ class Login extends React.Component {
             internalUid: resJson.current_user.uid,
             name: resJson.current_user.name,
             token: base64.encode(values.user + ':' + values.password),
-            csrfToken: resJson.csrf_token
+            csrfToken: resJson.csrf_token,
+            logoutToken: resJson.logout_token
           };
           self.setState({ user: user, redirect: "/posts-me" });
           self.props.updateUser(user);
@@ -112,8 +113,15 @@ class Login extends React.Component {
       token: null,
       csrfToken: null
     };
-    this.setState({ user: user });
-    this.props.updateUser(user);
+    const logoutUrl = this.state.user.logoutToken
+      ? Constants.APP_DOMAIN_USER_LOGOUT + '?token=' + encodeURIComponent(this.state.user.logoutToken)
+      : Constants.APP_DOMAIN_USER_LOGOUT;
+    fetch(logoutUrl, { credentials: 'include' })
+      .catch(() => {})
+      .finally(() => {
+        this.setState({ user: user });
+        this.props.updateUser(user);
+      });
   }
 }
 

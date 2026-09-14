@@ -7,7 +7,7 @@ class App extends React.Component {
     const savedUser = localStorage.getItem('drupalUser');
     const user = savedUser ? JSON.parse(savedUser) : null;
     this.state = {
-      user: user && user.csrfToken ? user : {
+      user: user && user.csrfToken && user.logoutToken ? user : {
         uid: null,
         name: null,
         token: null

@@ -46,7 +46,7 @@ class DetailPost extends React.Component {
               <Link to={
                 {
                   pathname: `/post-delete/${post.id}`,
-                  postName: post.attributes.title
+                  state: { postName: post.attributes.title }
                   }
               }>
                 Delete Post

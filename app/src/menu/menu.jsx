@@ -35,6 +35,12 @@ function EditPostRoute(props) {
   return <EditPost {...props} match={{ params }} />;
 }
 
+function DeletePostRoute(props) {
+  const params = useParams();
+  const location = useLocation();
+  return <DeletePost {...props} match={{ params }} location={location} />;
+}
+
 class Menu extends React.Component {
   constructor(props) {
     super(props);
@@ -73,8 +79,6 @@ class Menu extends React.Component {
             </ul>
           </nav>
 
-          {/* A <Switch> looks through its children <Route>s and
-              renders the first one that matches the current URL. */}
           <Routes>
             <Route path="/login"
               element={<Login 
@@ -109,8 +113,8 @@ class Menu extends React.Component {
               element={<DetailPostRoute user = {this.state.user}/>}
             />
             <Route
-              exact path="/post-delete/:postId"
-              render={(props) => <DeletePost {...props} user = {this.state.user}/>}
+              path="/post-delete/:postId"
+              element={<DeletePostRoute user = {this.state.user}/>}
             />
             <Route
               path="/post-edit/:postId"
