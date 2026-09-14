@@ -7,7 +7,7 @@ class UserPosts extends React.Component {
     this.state = {
       posts: [],
       userId : props.match.params.userId,
-      userName: props.location.userName
+      userName: props.location.state && props.location.state.userName
     };
   };
 

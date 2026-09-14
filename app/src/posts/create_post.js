@@ -84,6 +84,7 @@ class CreatePost extends React.Component {
           'Accept': 'application/vnd.api+json',
           'Authorization': ' Basic ' + this.state.user.token
         },
+        credentials: 'include',
         body: JSON.stringify(data),
       };
 
@@ -101,6 +102,7 @@ class CreatePost extends React.Component {
             'Content-Disposition': 'file; filename="' + values.file.name + '"',
             'Authorization': ' Basic ' + self.state.user.token
           },
+            credentials: 'include',
           body: self.state.image,
         };
         let url = Constants.APP_DOMAIN_POSTS + '/' + postId + '/field_image';

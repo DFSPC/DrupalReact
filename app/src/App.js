@@ -4,11 +4,12 @@ import Menu from './menu/menu.js'
 class App extends React.Component {
   constructor(props) {
     super(props);
+    const savedUser = localStorage.getItem('drupalUser');
     this.state = {
-      user :{
+      user: savedUser ? JSON.parse(savedUser) : {
         uid: null,
         name: null,
-        token : null
+        token: null
       }
     };
   };

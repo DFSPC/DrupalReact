@@ -49,7 +49,8 @@ class DeletePost extends React.Component {
         'Content-Type': 'application/vnd.api+json',
         'Accept': 'application/vnd.api+json',
         'Authorization': ' Basic ' + this.state.user.token
-      }
+      },
+      credentials: 'include',
     };
 
     fetch(url, obj)

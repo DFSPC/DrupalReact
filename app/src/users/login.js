@@ -64,6 +64,7 @@ class Login extends React.Component {
       headers: {
         'Content-Type': 'application/json',
       },
+      credentials: 'include',
       body: JSON.stringify(data),
     };
 
@@ -73,22 +74,21 @@ class Login extends React.Component {
     })
     .then(function(resJson) {
       if (!!resJson.csrf_token){
-        let url = Constants.APP_DOMAIN_USER_INFO + '?filter[uid][value]=' + resJson.current_user.uid;
-        fetch(url)
+        fetch(Constants.APP_DOMAIN_USER_INFO, { credentials: 'include' })
         .then(res => res.json())
-        .then(
-          (result) => {
-            self.setState({
-              user :{
-                uid: result.data[0].id,
-                name: resJson.current_user.name,
-                token : base64.encode(values.user + ':' + values.password)
-              }
-            });
-            self.props.updateUser(self.state.user);
-            self.setState({ redirect: "/posts-me" });
-          }
-        )
+        .then(result => {
+          const apiUser = result.data.find(item =>
+            item.attributes && item.attributes.display_name === resJson.current_user.name
+          );
+          const user = {
+            uid: apiUser ? apiUser.id : resJson.current_user.uid,
+            internalUid: resJson.current_user.uid,
+            name: resJson.current_user.name,
+            token: base64.encode(values.user + ':' + values.password)
+          };
+          self.setState({ user: user, redirect: "/posts-me" });
+          self.props.updateUser(user);
+        });
       }else{
         return false;
       }
@@ -96,14 +96,13 @@ class Login extends React.Component {
   }
 
   userLogout(values){
-    this.setState({
-      user :{
-        uid: null,
-        name: null,
-        token: null
-      }
-    });
-    this.props.updateUser(this.state.user);
+    const user = {
+      uid: null,
+      name: null,
+      token: null
+    };
+    this.setState({ user: user });
+    this.props.updateUser(user);
   }
 }
 

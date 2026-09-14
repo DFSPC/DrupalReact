@@ -22,7 +22,7 @@ class Users extends React.Component {
                 <Link to={
                   {
                     pathname: `/user/${user.id}`,
-                    userName: user.attributes.display_name
+                      state: { userName: user.attributes.display_name }
                     }
                 }>
                   <h3>{user.attributes.display_name}</h3>
@@ -36,7 +36,7 @@ class Users extends React.Component {
 
   componentDidMount() {
     let url = Constants.APP_DOMAIN_USER_INFO;
-    fetch(url)
+    fetch(url, { credentials: 'include' })
     .then(res => res.json())
     .then(
       (result) => {

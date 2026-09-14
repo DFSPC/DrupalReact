@@ -7,36 +7,46 @@ class DetailPost extends React.Component {
     super(props);
     this.state = {
       postId : props.match.params.postId,
-      user: props.user
+      user: props.user || {}
     };
-    console.log("this.state.post", this.state.post);
   };
 
   render() {
     let userId = this.state.user.uid;
-    console.log("this.state.post", this.state.post);
     if (this.state.post !== undefined){
+      const post = Array.isArray(this.state.post.data)
+        ? this.state.post.data[0]
+        : this.state.post.data;
+      const included = this.state.post.included || [];
+      const author = included.find(item => item.type === 'user--user');
+      const image = included.find(item => item.type === 'file--file');
+      const authorName = author && author.attributes && author.attributes.name;
+
+      if (!post) {
+        return <p>Post not found.</p>;
+      }
+
       return (
         <div className = "post-detail">
-          <h2>{this.state.post.data.attributes.title}</h2>
-          <p dangerouslySetInnerHTML={{ __html: this.state.post.data.attributes.body.value }} />
-          {!!this.state.post.included[1] &&
-            <img alt ={this.state.post.data.attributes.title} src = {Constants.APP_DOMAIN + this.state.post.included[1].attributes.uri.url}></img>
+          <h2>{post.attributes.title}</h2>
+          <p dangerouslySetInnerHTML={{ __html: post.attributes.body.value }} />
+          {!!image && image.attributes.uri && image.attributes.uri.url &&
+            <img alt ={post.attributes.title} src = {Constants.APP_DOMAIN + image.attributes.uri.url}></img>
           }
           <ul>
-            <li>Created: {this.state.post.data.attributes.created}</li>
-            <li>Created by: {this.state.post.included[0].attributes.name}</li>
+            <li>Created: {post.attributes.created}</li>
+            {!!authorName && <li>Created by: {authorName}</li>}
           </ul>
-          {userId && userId === this.state.post.included[0].id &&
+          {userId && author && userId === author.id &&
             <div>
-              <Link to={`/post-edit/${this.state.post.data.id}`}>
+              <Link to={`/post-edit/${post.id}`}>
                 Edit Post
               </Link>
               <br></br>
               <Link to={
                 {
-                  pathname: `/post-delete/${this.state.post.data.id}`,
-                  postName: this.state.post.data.attributes.title
+                  pathname: `/post-delete/${post.id}`,
+                  postName: post.attributes.title
                   }
               }>
                 Delete Post
@@ -54,7 +64,7 @@ class DetailPost extends React.Component {
 
   componentDidMount() {
     let url = Constants.APP_DOMAIN_POSTS + '/' + this.state.postId + '?fields[user--user]=name,mail,uid&fields[file--file]=uri,url&include=uid,field_image';
-    fetch(url)
+    fetch(url, { credentials: 'include' })
     .then(res => res.json())
     .then(
       (result) => {

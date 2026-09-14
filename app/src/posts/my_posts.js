@@ -20,7 +20,7 @@ class MyPosts extends React.Component {
       return (
         <div className = "my-post">
           <h2>My posts</h2>
-          <Posts userId = {this.state.user.uid}/>
+          <Posts user = {this.state.user} userId = {this.state.user.uid}/>
         </div>
       );
     }

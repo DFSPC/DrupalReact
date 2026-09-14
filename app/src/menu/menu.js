@@ -3,7 +3,9 @@ import {
   BrowserRouter as Router,
   Routes,
   Route,
-  Link
+  Link,
+  useParams,
+  useLocation
 } from "react-router-dom";
 
 import Login from './../users/login.js';
@@ -16,6 +18,17 @@ import UserPosts from './../posts/user_posts.js';
 import DetailPost from './../posts/detail_post.js';
 import DeletePost from './../posts/delete_post.js';
 import EditPost from './../posts/edit_post.js';
+
+function DetailPostRoute(props) {
+  const params = useParams();
+  return <DetailPost {...props} match={{ params }} />;
+}
+
+function UserPostsRoute() {
+  const params = useParams();
+  const location = useLocation();
+  return <UserPosts match={{ params }} location={location} />;
+}
 
 class Menu extends React.Component {
   constructor(props) {
@@ -83,12 +96,12 @@ class Menu extends React.Component {
               element={<MyPosts user = {this.state.user}/>}
             />
             <Route
-              exact path="/user/:userId"
-              render={(props) => <UserPosts {...props}/>}
+              path="/user/:userId"
+              element={<UserPostsRoute />}
             />
             <Route
-              exact path="/post/:postId"
-              children={(props) => <DetailPost {...props} user = {this.state.user}/>}
+              path="/post/:postId"
+              element={<DetailPostRoute user = {this.state.user}/>}
             />
             <Route
               exact path="/post-delete/:postId"
@@ -105,6 +118,11 @@ class Menu extends React.Component {
   };
 
   updateUser = (user) => {
+    if (user.token) {
+      localStorage.setItem('drupalUser', JSON.stringify(user));
+    } else {
+      localStorage.removeItem('drupalUser');
+    }
     this.setState({
       user: user
     })

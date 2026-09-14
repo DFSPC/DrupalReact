@@ -14,7 +14,7 @@ class EditPost extends React.Component {
 
   componentDidMount() {
     let url = Constants.APP_DOMAIN_POSTS + '/' + this.state.postId + '?fields[user--user]=name,mail,uid&include=uid';
-    fetch(url)
+    fetch(url, { credentials: 'include' })
     .then(res => res.json())
     .then(
       (result) => {
@@ -88,6 +88,7 @@ class EditPost extends React.Component {
         'Accept': 'application/vnd.api+json',
         'Authorization': ' Basic ' + this.state.user.token
       },
+      credentials: 'include',
       body: JSON.stringify(data),
     };
 

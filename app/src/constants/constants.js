@@ -1,4 +1,4 @@
-const APP_DOMAIN  = 'http://localhost:8000';
+const APP_DOMAIN  = 'https://dev-data-center-dfs.pantheonsite.io';
 const Constants = {
   APP_DOMAIN : APP_DOMAIN,
   APP_DOMAIN_POSTS : APP_DOMAIN + '/jsonapi/node/article',
