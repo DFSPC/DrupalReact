@@ -2,7 +2,7 @@ import React from 'react';
 import { Navigate } from "react-router-dom";
 import { Formik, Field, Form } from "formik";
 import base64 from 'react-native-base64'
-import Constants from './../constants/constants.js';
+import Constants from './../constants/constants.jsx';
 
 class Login extends React.Component {
   constructor(props) {

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Navigate, Link } from "react-router-dom";
 import { Formik, Field, Form } from "formik";
-import Constants from './../constants/constants.js';
+import Constants from './../constants/constants.jsx';
 
 class CreatePost extends React.Component {
   constructor(props) {

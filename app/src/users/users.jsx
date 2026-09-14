@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from "react-router-dom";
-import Constants from './../constants/constants.js';
+import Constants from './../constants/constants.jsx';
 
 class Users extends React.Component {
   constructor(props) {

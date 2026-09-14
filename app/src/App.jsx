@@ -1,5 +1,5 @@
 import React from 'react';
-import Menu from './menu/menu.js'
+import Menu from './menu/menu.jsx'
 
 class App extends React.Component {
   constructor(props) {
